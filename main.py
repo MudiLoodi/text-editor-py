@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog as fd
+from tkinter import messagebox 
 
 class TextEditApp:
     def __init__(self, root):
@@ -11,14 +12,25 @@ class TextEditApp:
     # TODO: Warn about unsaved changes.    
     def quit_app(self):
         root.destroy()
+    
+    def ask_for_unsaved_changes(self):
+        current_content = self.text.get(1.0, "end-1c")
+        if (current_content):
+            continue_ = messagebox.askokcancel("Unsaved changes", "You have made changes that are unsaved. Do you want to continue?") 
+            # User want to continue action. Return will be 'False'
+            return continue_
+        return True
         
     def open_file(self):
-        filetypes = (('text files', '*.txt'), ('All files', '*.*'))
-        filename = fd.askopenfilename(filetypes=filetypes)
-        if (filename):
-            with open(filename, "r") as file:
-                file_content = file.read()
-                self.text.insert(chars = file_content, index=END)
+        if self.ask_for_unsaved_changes():
+            filetypes = (('text files', '*.txt'), ('All files', '*.*'))
+            filename = fd.askopenfilename(filetypes=filetypes)
+            if (filename):
+                with open(filename, "r") as file:
+                    file_content = file.read()
+                    self.text.insert(chars = file_content, index=END)
+                file.close()
+                
         
     def setup_tool_bar(self):
         tool_bar_container = Frame(self.root, background="red")
