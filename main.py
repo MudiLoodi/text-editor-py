@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog as fd
 
-class HelloWorldApp:
+class TextEditApp:
     def __init__(self, root):
         self.root = root
         self.setup_tool_bar()
@@ -46,5 +46,5 @@ class HelloWorldApp:
 
 if __name__ == "__main__":
     root = Tk()
-    app = HelloWorldApp(root)
+    app = TextEditApp(root)
     root.mainloop()
