@@ -7,6 +7,7 @@ class TextEditApp:
     def __init__(self, root):
         self.root = root
         self.current_file = None
+        self.file_name_StrVar = StringVar(value="Untitled")
         self.setup_tool_bar()
         self.setup_text_area()
         
@@ -32,11 +33,11 @@ class TextEditApp:
                     file_content = file.read()
                     self.text.insert(chars = file_content, index=END)
                 file.close()
-            self.current_file = filename
+            self.file_name_StrVar.set(filename)
     
     def save_file(self):
         filetypes = (('text files', '*.txt'), ('All files', '*.*'))
-        if self.current_file:
+        if self.file_name_StrVar:
             file_path_to_save = fd.asksaveasfilename(confirmoverwrite=True, filetypes=filetypes, title="Save As")
             with open(file_path_to_save, "w") as file:
                 new_file_content = self.text.get(1.0, "end-1c")
@@ -45,7 +46,7 @@ class TextEditApp:
         
         
     def setup_tool_bar(self):
-        tool_bar_container = Frame(self.root, background="red")
+        tool_bar_container = Frame(self.root)
         tool_bar_container.pack(fill="both", expand=False)
         
         open_button = Button(tool_bar_container, text="Open", command=self.open_file)
@@ -60,12 +61,19 @@ class TextEditApp:
 
 
     def setup_text_area(self):
-        text_area_container = Frame(self.root)
+        text_area_container = Frame(self.root, bg="grey")
         # Expand and fill to the full width and height of parent window
-        text_area_container.pack(fill="both", expand=True)
+        text_area_container.pack(fill="both", expand=True) 
         
-        self.text = Text(text_area_container, font="Helvetica 12")
-        self.text.pack(pady=45, padx=45, fill="both", expand=True)
+        self.text = Text(text_area_container, font="Helvetica 12", border=2)
+        self.text.pack(padx=45, pady=(10, 0), fill="both", expand=True)
+        
+        file_info_container = Frame(text_area_container, bg="green")
+        file_info_container.pack(side=RIGHT, padx=(0, 45), pady=4)
+        
+        
+        self.file_name_label = Label(file_info_container, text=self.file_name_StrVar.get())
+        self.file_name_label.pack()
         
 
 if __name__ == "__main__":
