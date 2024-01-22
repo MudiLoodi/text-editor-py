@@ -2,12 +2,14 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter import messagebox 
+import os
 
 class TextEditApp:
     def __init__(self, root):
         self.root = root
         self.current_file = None
         self.file_name_StrVar = StringVar(value="Untitled")
+        self.current_file_content = ""
         
         self.setup_tool_bar()
         self.setup_text_area()
@@ -18,8 +20,8 @@ class TextEditApp:
         root.destroy()
     
     def ask_for_unsaved_changes(self):
-        current_content = self.text.get(1.0, "end-1c")
-        if (current_content):
+        current_content_in_editor = self.text.get(1.0, "end-1c")
+        if (self.current_file_content != current_content_in_editor):
             continue_ = messagebox.askokcancel("Unsaved changes", "You have made changes that are unsaved. Do you want to continue?") 
             # User want to continue action. Return True
             return continue_
@@ -29,13 +31,16 @@ class TextEditApp:
     def open_file(self):
         if self.ask_for_unsaved_changes():
             filetypes = (('text files', '*.txt'), ('All files', '*.*'))
-            filename = fd.askopenfilename(filetypes=filetypes)
-            if (filename):
-                with open(filename, "r") as file:
+            filepath = fd.askopenfilename(filetypes=filetypes)
+            if filepath:
+                with open(filepath, "r") as file:
                     file_content = file.read()
                     self.text.insert(chars = file_content, index=END)
+                    self.current_file_content = file_content
                 file.close()
-            self.file_name_StrVar.set(filename)
+                
+            file_name = os.path.basename(filepath)
+            self.file_name_StrVar.set(file_name)
     
     def save_file(self):
         filetypes = (('text files', '*.txt'), ('All files', '*.*'))
@@ -69,7 +74,7 @@ class TextEditApp:
         self.text.pack(padx=45, pady=(10, 0), fill="both", expand=True)
         
     def setup_file_info(self):
-        file_info_container = Frame(self.text_area_container, bg="green")
+        file_info_container = Frame(self.text_area_container)
         file_info_container.pack(side=RIGHT, padx=(0, 45), pady=4)
         
         self.file_name_label = Label(file_info_container, textvariable=self.file_name_StrVar)
