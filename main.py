@@ -8,8 +8,10 @@ class TextEditApp:
         self.root = root
         self.current_file = None
         self.file_name_StrVar = StringVar(value="Untitled")
+        
         self.setup_tool_bar()
         self.setup_text_area()
+        self.setup_file_info()
         
     # TODO: Warn about unsaved changes.    
     def quit_app(self):
@@ -61,16 +63,16 @@ class TextEditApp:
 
 
     def setup_text_area(self):
-        text_area_container = Frame(self.root, bg="grey")
+        self.text_area_container = Frame(self.root, bg="grey")
         # Expand and fill to the full width and height of parent window
-        text_area_container.pack(fill="both", expand=True) 
+        self.text_area_container.pack(fill="both", expand=True) 
         
-        self.text = Text(text_area_container, font="Helvetica 12", border=2)
+        self.text = Text(self.text_area_container, font="Helvetica 12", border=2)
         self.text.pack(padx=45, pady=(10, 0), fill="both", expand=True)
         
-        file_info_container = Frame(text_area_container, bg="green")
+    def setup_file_info(self):
+        file_info_container = Frame(self.text_area_container, bg="green")
         file_info_container.pack(side=RIGHT, padx=(0, 45), pady=4)
-        
         
         self.file_name_label = Label(file_info_container, text=self.file_name_StrVar.get())
         self.file_name_label.pack()
