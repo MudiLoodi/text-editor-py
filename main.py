@@ -9,6 +9,7 @@ class TextEditApp:
         self.root = root
         self.current_file = None
         self.file_name_StrVar = StringVar(value="Untitled")
+        self.file_status_StrVar = StringVar(value="")
         self.current_file_content = ""
         
         self.setup_tool_bar()
@@ -18,6 +19,10 @@ class TextEditApp:
     # TODO: Warn about unsaved changes.    
     def quit_app(self):
         root.destroy()
+        
+    def detect_changes(self, event):
+        key = event.char
+        self.file_status_StrVar.set("⚫")
     
     def ask_for_unsaved_changes(self):
         current_content_in_editor = self.text.get(1.0, "end-1c")
@@ -35,12 +40,12 @@ class TextEditApp:
             if filepath:
                 with open(filepath, "r") as file:
                     file_content = file.read()
+                    self.text.delete(index1=1.0, index2=END)
                     self.text.insert(chars = file_content, index=END)
                     self.current_file_content = file_content
                 file.close()
-                
-            file_name = os.path.basename(filepath)
-            self.file_name_StrVar.set(file_name)
+                file_name = os.path.basename(filepath)
+                self.file_name_StrVar.set(file_name)
     
     def save_file(self):
         filetypes = (('text files', '*.txt'), ('All files', '*.*'))
@@ -73,12 +78,18 @@ class TextEditApp:
         self.text = Text(self.text_area_container, font="Helvetica 12", border=2)
         self.text.pack(padx=45, pady=(10, 0), fill="both", expand=True)
         
+        # Detect changes in text
+        self.text.bind("<Key>", self.detect_changes)
+        
     def setup_file_info(self):
         file_info_container = Frame(self.text_area_container)
         file_info_container.pack(side=RIGHT, padx=(0, 45), pady=4)
         
         self.file_name_label = Label(file_info_container, textvariable=self.file_name_StrVar)
-        self.file_name_label.pack()
+        self.file_name_label.grid(column=0, row=0, padx=10)
+        
+        self.file_status_label = Label(file_info_container, textvariable=self.file_status_StrVar)
+        self.file_status_label.grid(column=1, row=0, padx=10)
         
 
 if __name__ == "__main__":
