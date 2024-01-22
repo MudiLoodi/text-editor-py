@@ -7,10 +7,10 @@ import os
 class TextEditApp:
     def __init__(self, root):
         self.root = root
-        self.current_file = None
         self.file_name_StrVar = StringVar(value="Untitled")
         self.file_status_StrVar = StringVar(value="")
         self.current_file_content = ""
+        self.file_path_to_save = ""
         
         self.setup_tool_bar()
         self.setup_text_area()
@@ -21,8 +21,7 @@ class TextEditApp:
         root.destroy()
         
     def detect_changes(self, event):
-        key = event.char
-        self.file_status_StrVar.set("⚫")
+        self.file_status_StrVar.set("⬤")
     
     def ask_for_unsaved_changes(self):
         current_content_in_editor = self.text.get(1.0, "end-1c")
@@ -36,27 +35,30 @@ class TextEditApp:
     def open_file(self):
         if self.ask_for_unsaved_changes():
             filetypes = (('text files', '*.txt'), ('All files', '*.*'))
-            filepath = fd.askopenfilename(filetypes=filetypes)
-            if filepath:
-                with open(filepath, "r") as file:
+            self.file_path_to_save = fd.askopenfilename(filetypes=filetypes)
+            if self.file_path_to_save:
+                with open(self.file_path_to_save, "r") as file:
                     file_content = file.read()
                     self.text.delete(index1=1.0, index2=END)
                     self.text.insert(chars = file_content, index=END)
                     self.current_file_content = file_content
                 file.close()
-                file_name = os.path.basename(filepath)
+                file_name = os.path.basename(self.file_path_to_save)
                 self.file_name_StrVar.set(file_name)
     
-    def save_file(self):
+    def save_file(self, mode):
         filetypes = (('text files', '*.txt'), ('All files', '*.*'))
-        if self.file_name_StrVar:
-            file_path_to_save = fd.asksaveasfilename(confirmoverwrite=True, filetypes=filetypes, title="Save As")
-            with open(file_path_to_save, "w") as file:
+        # if mode is save as or the current file is 'Untitled'
+        if mode == "saveAS" or not self.file_name_StrVar:
+            self.file_path_to_save = fd.asksaveasfilename(confirmoverwrite=True, filetypes=filetypes, title="Save As")
+        if self.file_path_to_save:
+            with open(self.file_path_to_save, "w") as file:
                 new_file_content = self.text.get(1.0, "end-1c")
+                self.current_file_content = new_file_content
                 file.write(new_file_content)
+            self.file_status_StrVar.set("")
             file.close()
-        
-        
+    
     def setup_tool_bar(self):
         tool_bar_container = Frame(self.root)
         tool_bar_container.pack(fill="both", expand=False)
@@ -64,11 +66,14 @@ class TextEditApp:
         open_button = Button(tool_bar_container, text="Open", command=self.open_file)
         open_button.grid(row=0, column=0, padx=4, pady=4)
         
-        save_button = Button(tool_bar_container, text="Save", command=self.save_file)
-        save_button.grid(row=0, column=1, padx=4, pady=4)
+        save_as_button = Button(tool_bar_container, text="Save as", command=lambda: self.save_file("saveAS"))
+        save_as_button.grid(row=0, column=1, padx=4, pady=4)
+        
+        save_button = Button(tool_bar_container, text="Save", command=lambda: self.save_file("save"))
+        save_button.grid(row=0, column=2, padx=4, pady=4)
         
         quit_button = Button(tool_bar_container, text="Quit", command=self.quit_app)
-        quit_button.grid(row=0, column=2, padx=4, pady=4)
+        quit_button.grid(row=0, column=3, padx=4, pady=4)
 
     def setup_text_area(self):
         self.text_area_container = Frame(self.root, bg="grey")
@@ -86,10 +91,10 @@ class TextEditApp:
         file_info_container.pack(side=RIGHT, padx=(0, 45), pady=4)
         
         self.file_name_label = Label(file_info_container, textvariable=self.file_name_StrVar)
-        self.file_name_label.grid(column=0, row=0, padx=10)
+        self.file_name_label.grid(column=0, row=0)
         
         self.file_status_label = Label(file_info_container, textvariable=self.file_status_StrVar)
-        self.file_status_label.grid(column=1, row=0, padx=10)
+        self.file_status_label.grid(column=1, row=0)
         
 
 if __name__ == "__main__":
