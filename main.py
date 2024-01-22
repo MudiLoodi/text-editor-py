@@ -59,8 +59,6 @@ class TextEditApp:
         
         quit_button = Button(tool_bar_container, text="Quit", command=self.quit_app)
         quit_button.grid(row=0, column=2, padx=4, pady=4)
-        
-
 
     def setup_text_area(self):
         self.text_area_container = Frame(self.root, bg="grey")
@@ -74,7 +72,7 @@ class TextEditApp:
         file_info_container = Frame(self.text_area_container, bg="green")
         file_info_container.pack(side=RIGHT, padx=(0, 45), pady=4)
         
-        self.file_name_label = Label(file_info_container, text=self.file_name_StrVar.get())
+        self.file_name_label = Label(file_info_container, textvariable=self.file_name_StrVar)
         self.file_name_label.pack()
         
 
