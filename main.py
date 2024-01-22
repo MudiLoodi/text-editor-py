@@ -23,6 +23,19 @@ class TextEditApp:
     def detect_changes(self, event):
         self.file_status_StrVar.set("⬤")
     
+    def listen_for_hotkeys(self, event):
+        # X11 key mas for Control (4) and Mod1 (8) keys. 4+8=12
+        if (event.state == 12):
+            match event.keysym:
+                case "s":
+                    self.save_file(None)
+                case "r":
+                    # TODO: Redo
+                    print("pressed r")
+                case "u":
+                    # TODO: Undo
+                    print("pressed u")
+    
     def ask_for_unsaved_changes(self):
         current_content_in_editor = self.text.get(1.0, "end-1c")
         if (self.current_file_content != current_content_in_editor):
@@ -49,7 +62,7 @@ class TextEditApp:
     def save_file(self, mode):
         filetypes = (('text files', '*.txt'), ('All files', '*.*'))
         # if mode is save as or the current file is 'Untitled'
-        if mode == "saveAS" or not self.file_name_StrVar:
+        if mode == "saveAS" or self.file_name_StrVar.get() == "Untitled":
             self.file_path_to_save = fd.asksaveasfilename(confirmoverwrite=True, filetypes=filetypes, title="Save As")
         if self.file_path_to_save:
             with open(self.file_path_to_save, "w") as file:
@@ -85,6 +98,8 @@ class TextEditApp:
         
         # Detect changes in text
         self.text.bind("<Key>", self.detect_changes)
+        # Listen for hotkeys
+        self.text.bind("<Control-s>", self.listen_for_hotkeys)
         
     def setup_file_info(self):
         file_info_container = Frame(self.text_area_container)
