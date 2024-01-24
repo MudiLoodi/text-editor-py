@@ -169,7 +169,8 @@ class TextEditApp:
             self.text.insert(chars = file_content, index=END)
             self.current_file_content = file_content
             self.file_name_StrVar.set(current_item["text"])
-            file.close()
+            self.file_path_to_save = absolute_path
+        file.close()
         
 
 if __name__ == "__main__":
