@@ -18,9 +18,8 @@ class TextEditApp:
         self.root.rowconfigure(1, weight=1)
         
         self.setup_tool_bar()
-        self.setup_treeview()
-        self.setup_text_area()
-        self.setup_file_info()
+        self.setup_panned_window()
+        # self.setup_file_info()
         
     # TODO: Warn about unsaved changes.    
     def quit_app(self):
@@ -92,11 +91,23 @@ class TextEditApp:
         file_menu_button.menu.add_command (label="Save As", command=lambda: self.save_file("saveAS"))
         
         quit_button = Button(tool_bar_container, text="Quit", command=self.quit_app)
-        quit_button.grid(row=0, column=3, padx=4, pady=4)
+        quit_button.grid(column=1, row=0, padx=4, pady=4)
 
-    def setup_text_area(self):
+    def setup_panned_window(self):
+        pw = ttk.PanedWindow(orient=HORIZONTAL)
+
+        # Left 
+        pw.add(self.treeview_section())
+
+        # Right 
+        pw.add(self.text_section())
+
+        pw.grid(column=1, row=1, sticky=NSEW)
+        
+        
+    def text_section(self):
         self.text_area_container = Frame(self.root, bg="grey")
-        self.text_area_container.grid(column=1, row=1, sticky=NSEW, padx=10, pady=10)
+        self.text_area_container.grid(column=0, row=0, sticky=NSEW, padx=10, pady=10)
         
         # Configure column and row weights for the text area container
         self.text_area_container.columnconfigure(0, weight=1)
@@ -110,13 +121,18 @@ class TextEditApp:
         # Listen for hotkeys
         self.text.bind("<Control-s>", self.listen_for_hotkeys)
         
+        return self.text_area_container
         
-    def setup_treeview(self):
-        tree_container = Frame(self.root, bg="red")
-        tree_container.grid(row=1, column=0)
         
-        label = Label(tree_container, text="Placeholder")
-        label.pack()
+    def treeview_section(self):
+        self.tree_container = Frame(self.root, bg="red")
+        self.tree_container.grid(column=1, row=1, sticky=NW)
+        tree = treeview.DirectoryTreeView(self.tree_container)
+        tree.grid(pady=10)
+        
+        return self.tree_container
+
+        
         
     def setup_file_info(self):
         file_info_container = Frame(self.text_area_container)
