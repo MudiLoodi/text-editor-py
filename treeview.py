@@ -12,6 +12,7 @@ class DirectoryTreeView(ttk.Treeview):
 
     def populate_tree(self, path, parent=''):
         for item in os.listdir(path):
+            # Ignore hidden files
             if not item.startswith(".") and not item.startswith("_"):
                 item_path = os.path.join(path, item)
 

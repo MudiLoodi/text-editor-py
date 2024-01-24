@@ -79,6 +79,7 @@ class TextEditApp:
             self.file_status_StrVar.set("")
             file.close()
     
+    # Sets up the tool bar at the top.
     def setup_tool_bar(self):
         self.tool_bar_container = Frame(self.root)
         self.tool_bar_container.grid(column=0, row=0, sticky=W)
@@ -95,6 +96,7 @@ class TextEditApp:
         quit_button = Button(self.tool_bar_container, text="Quit", command=self.quit_app)
         quit_button.grid(column=1, row=0, padx=4, pady=4)
 
+    # Sets up the paned window that holds the directory view and text sections.
     def setup_panned_window(self):
         pw = ttk.PanedWindow(orient=HORIZONTAL, width=1900)
 
@@ -107,6 +109,7 @@ class TextEditApp:
         pw.grid(column=0, row=1, sticky=NSEW)
         
         
+    # Sets up the text section. Returns a Frame after setting up its layout
     def text_section(self):
         self.text_area_container = Frame(self.root)
         self.text_area_container.grid(column=0, row=0, sticky=NSEW, padx=10, pady=10)
@@ -125,6 +128,7 @@ class TextEditApp:
         
         return self.text_area_container
         
+    # Sets up the directory view section. Retruns Frame after setting it up.
     def directory_treeview_section(self):
         self.tree_container = Frame(self.root)
         self.tree_container.grid(column=1, row=1)
@@ -132,9 +136,10 @@ class TextEditApp:
         # Overwrite default ttk style for later 
         # style = ttk.Style(self.root)
         # style.configure("Treeview", background=("gray"))
-        tree = treeview.DirectoryTreeView(self.tree_container)
-        tree.pack(fill="both", expand=True)
-        
+        self.tree = treeview.DirectoryTreeView(self.tree_container)
+        self.tree.pack(fill="both", expand=True)
+
+        self.tree.bind("<ButtonRelease-1>", self.open_selected_file)
         return self.tree_container
 
         
@@ -144,7 +149,17 @@ class TextEditApp:
         
         self.file_status_label = Label(self.tool_bar_container, textvariable=self.file_status_StrVar)
         self.file_status_label.grid(column=11, row=0)
-        
+    
+    # Opens the selected file from the directory view
+    def open_selected_file(self, event):
+        tree_content = self.tree.focus()
+        current_item = self.tree.item(tree_content)
+        with open(current_item["text"], "r") as file:
+            file_content = file.read()
+            self.text.delete(index1=1.0, index2=END)
+            self.text.insert(chars = file_content, index=END)
+            self.current_file_content = file_content
+        file.close()
         
 
 if __name__ == "__main__":
