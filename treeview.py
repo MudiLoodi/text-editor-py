@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import *
 import os
 
 class DirectoryTreeView(ttk.Treeview):
@@ -9,6 +8,17 @@ class DirectoryTreeView(ttk.Treeview):
         current_folder = os.path.basename(os.getcwd())
         self.heading('#0', text=f"{current_folder}", anchor=tk.W)
 
-        files = [f for f in os.listdir() if os.path.isfile(f)]
-        for i in range(0, len(files)):
-            self.insert("", END, text=f"{files[i]}", iid=i, open=False)
+        self.populate_tree(os.getcwd())
+
+    def populate_tree(self, path, parent=''):
+        for item in os.listdir(path):
+            if not item.startswith(".") and not item.startswith("_"):
+                item_path = os.path.join(path, item)
+
+                if os.path.isdir(item_path):
+                    # If it's a directory, add it as a parent node
+                    node_id = self.insert(parent, tk.END, text=item, open=False)
+                    self.populate_tree(item_path, parent=node_id)
+                else:
+                    # If it's a file, add it as a child node
+                    self.insert(parent, tk.END, text=item, open=False)
