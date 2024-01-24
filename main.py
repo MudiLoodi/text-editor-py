@@ -24,7 +24,7 @@ class TextEditApp:
         self.file_status_StrVar.set("⬤")
     
     def listen_for_hotkeys(self, event):
-        # X11 key mas for Control (4) and Mod1 (8) keys. 4+8=12
+        # X11 key mask for Control (4) and Mod1 (8) keys. 4+8=12
         if (event.state == 12):
             match event.keysym:
                 case "s":
@@ -76,14 +76,14 @@ class TextEditApp:
         tool_bar_container = Frame(self.root)
         tool_bar_container.pack(fill="both", expand=False)
         
-        open_button = Button(tool_bar_container, text="Open", command=self.open_file)
-        open_button.grid(row=0, column=0, padx=4, pady=4)
+        file_menu_button= Menubutton ( tool_bar_container, text="File", relief=RAISED )
+        file_menu_button.menu = Menu (file_menu_button, tearoff = 0)
+        file_menu_button["menu"] = file_menu_button.menu
+        file_menu_button.grid()
         
-        save_as_button = Button(tool_bar_container, text="Save as", command=lambda: self.save_file("saveAS"))
-        save_as_button.grid(row=0, column=1, padx=4, pady=4)
-        
-        save_button = Button(tool_bar_container, text="Save", command=lambda: self.save_file("save"))
-        save_button.grid(row=0, column=2, padx=4, pady=4)
+        file_menu_button.menu.add_command (label="Open", command=self.open_file)
+        file_menu_button.menu.add_command (label="Save", command=lambda: self.save_file("save"))
+        file_menu_button.menu.add_command (label="Save As", command=lambda: self.save_file("saveAS"))
         
         quit_button = Button(tool_bar_container, text="Quit", command=self.quit_app)
         quit_button.grid(row=0, column=3, padx=4, pady=4)
