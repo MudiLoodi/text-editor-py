@@ -154,11 +154,13 @@ class TextEditApp:
     def open_selected_file(self, event):
         tree_content = self.tree.focus()
         current_item = self.tree.item(tree_content)
+        # TODO: Check if the current item is a dir, if so ignore.
         with open(current_item["text"], "r") as file:
             file_content = file.read()
             self.text.delete(index1=1.0, index2=END)
             self.text.insert(chars = file_content, index=END)
             self.current_file_content = file_content
+            self.file_name_StrVar.set(current_item["text"])
         file.close()
         
 
