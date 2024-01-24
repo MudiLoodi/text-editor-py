@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter import messagebox 
 import os
+import treeview
 
 class TextEditApp:
     def __init__(self, root):
@@ -11,14 +12,19 @@ class TextEditApp:
         self.file_status_StrVar = StringVar(value="")
         self.current_file_content = ""
         self.file_path_to_save = ""
+
+        # Allows root to expand
+        self.root.columnconfigure(1, weight=1)
+        self.root.rowconfigure(1, weight=1)
         
         self.setup_tool_bar()
+        self.setup_treeview()
         self.setup_text_area()
         self.setup_file_info()
         
     # TODO: Warn about unsaved changes.    
     def quit_app(self):
-        root.destroy()
+        self.root.destroy()
         
     def detect_changes(self, event):
         self.file_status_StrVar.set("⬤")
@@ -74,12 +80,12 @@ class TextEditApp:
     
     def setup_tool_bar(self):
         tool_bar_container = Frame(self.root)
-        tool_bar_container.pack(fill="both", expand=False)
+        tool_bar_container.grid(column=0, row=0)
         
         file_menu_button= Menubutton ( tool_bar_container, text="File", relief=RAISED )
         file_menu_button.menu = Menu (file_menu_button, tearoff = 0)
         file_menu_button["menu"] = file_menu_button.menu
-        file_menu_button.grid()
+        file_menu_button.grid(column=0, row=0)
         
         file_menu_button.menu.add_command (label="Open", command=self.open_file)
         file_menu_button.menu.add_command (label="Save", command=lambda: self.save_file("save"))
@@ -90,20 +96,31 @@ class TextEditApp:
 
     def setup_text_area(self):
         self.text_area_container = Frame(self.root, bg="grey")
-        # Expand and fill to the full width and height of parent window
-        self.text_area_container.pack(fill="both", expand=True) 
+        self.text_area_container.grid(column=1, row=1, sticky=NSEW, padx=10, pady=10)
+        
+        # Configure column and row weights for the text area container
+        self.text_area_container.columnconfigure(0, weight=1)
+        self.text_area_container.rowconfigure(0, weight=1)
         
         self.text = Text(self.text_area_container, font="Helvetica 12", border=2)
-        self.text.pack(padx=45, pady=(10, 0), fill="both", expand=True)
+        self.text.grid(sticky=NSEW)
         
         # Detect changes in text
         self.text.bind("<Key>", self.detect_changes)
         # Listen for hotkeys
         self.text.bind("<Control-s>", self.listen_for_hotkeys)
         
+        
+    def setup_treeview(self):
+        tree_container = Frame(self.root, bg="red")
+        tree_container.grid(row=1, column=0)
+        
+        label = Label(tree_container, text="Placeholder")
+        label.pack()
+        
     def setup_file_info(self):
         file_info_container = Frame(self.text_area_container)
-        file_info_container.pack(side=RIGHT, padx=(0, 45), pady=4)
+        file_info_container.grid()
         
         self.file_name_label = Label(file_info_container, textvariable=self.file_name_StrVar)
         self.file_name_label.grid(column=0, row=0)
