@@ -20,8 +20,8 @@ class TextEditApp:
         self.root.title("Text Edit")
         
         self.setup_tool_bar()
+        self.setup_file_info()
         self.setup_panned_window()
-        # self.setup_file_info()
         
     # TODO: Warn about unsaved changes.    
     def quit_app(self):
@@ -80,10 +80,10 @@ class TextEditApp:
             file.close()
     
     def setup_tool_bar(self):
-        tool_bar_container = Frame(self.root)
-        tool_bar_container.grid(column=0, row=0, sticky=W)
+        self.tool_bar_container = Frame(self.root)
+        self.tool_bar_container.grid(column=0, row=0, sticky=W)
         
-        file_menu_button= Menubutton ( tool_bar_container, text="File", relief=RAISED )
+        file_menu_button= Menubutton ( self.tool_bar_container, text="File", relief=RAISED )
         file_menu_button.menu = Menu (file_menu_button, tearoff = 0)
         file_menu_button["menu"] = file_menu_button.menu
         file_menu_button.grid(column=0, row=0)
@@ -92,7 +92,7 @@ class TextEditApp:
         file_menu_button.menu.add_command (label="Save", command=lambda: self.save_file("save"))
         file_menu_button.menu.add_command (label="Save As", command=lambda: self.save_file("saveAS"))
         
-        quit_button = Button(tool_bar_container, text="Quit", command=self.quit_app)
+        quit_button = Button(self.tool_bar_container, text="Quit", command=self.quit_app)
         quit_button.grid(column=1, row=0, padx=4, pady=4)
 
     def setup_panned_window(self):
@@ -139,14 +139,12 @@ class TextEditApp:
 
         
     def setup_file_info(self):
-        file_info_container = Frame(self.text_area_container)
-        file_info_container.grid()
+        self.file_name_label = Label(self.tool_bar_container, textvariable=self.file_name_StrVar)
+        self.file_name_label.grid(column=10, row=0)
         
-        self.file_name_label = Label(file_info_container, textvariable=self.file_name_StrVar)
-        self.file_name_label.grid(column=0, row=0)
+        self.file_status_label = Label(self.tool_bar_container, textvariable=self.file_status_StrVar)
+        self.file_status_label.grid(column=11, row=0)
         
-        self.file_status_label = Label(file_info_container, textvariable=self.file_status_StrVar)
-        self.file_status_label.grid(column=1, row=0)
         
 
 if __name__ == "__main__":
