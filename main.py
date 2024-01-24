@@ -150,18 +150,26 @@ class TextEditApp:
         self.file_status_label = Label(self.tool_bar_container, textvariable=self.file_status_StrVar)
         self.file_status_label.grid(column=11, row=0)
     
+    def find_file_path(self, filename):
+        for root, dirs, files in os.walk(os.getcwd()):
+            if filename in files:
+                return os.path.join(root, filename)
+
+        return None  # File not found
+
     # Opens the selected file from the directory view
     def open_selected_file(self, event):
         tree_content = self.tree.focus()
         current_item = self.tree.item(tree_content)
+        absolute_path = self.find_file_path(current_item["text"])
         # TODO: Check if the current item is a dir, if so ignore.
-        with open(current_item["text"], "r") as file:
+        with open(absolute_path, "r") as file:
             file_content = file.read()
             self.text.delete(index1=1.0, index2=END)
             self.text.insert(chars = file_content, index=END)
             self.current_file_content = file_content
             self.file_name_StrVar.set(current_item["text"])
-        file.close()
+            file.close()
         
 
 if __name__ == "__main__":
