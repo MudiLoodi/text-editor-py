@@ -4,3 +4,4 @@
 * Open and edit files.
 * Quick save and save as.
 * Hotkey support (currently only ctrl-s to quick save).
+* File Directory View
