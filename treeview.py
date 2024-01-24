@@ -7,7 +7,7 @@ from tkinter.messagebox import showinfo
 class DirectoryTreeView(ttk.Treeview):
     def __init__(self, root):
         super().__init__(root)
-        self.heading('#0', text='Departments', anchor=tk.W)
+        self.heading('#0', text='Folder name goes here', anchor=tk.W)
         self.insert('', tk.END, text='Administration', iid=0, open=False)
         self.insert('', tk.END, text='Logistics', iid=1, open=False)
         self.insert('', tk.END, text='Sales', iid=2, open=False)

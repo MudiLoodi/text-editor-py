@@ -16,6 +16,8 @@ class TextEditApp:
         # Allows root to expand
         self.root.columnconfigure(1, weight=1)
         self.root.rowconfigure(1, weight=1)
+        self.root.geometry("850x600")
+        self.root.title("Text Edit")
         
         self.setup_tool_bar()
         self.setup_panned_window()
@@ -79,7 +81,7 @@ class TextEditApp:
     
     def setup_tool_bar(self):
         tool_bar_container = Frame(self.root)
-        tool_bar_container.grid(column=0, row=0)
+        tool_bar_container.grid(column=0, row=0, sticky=W)
         
         file_menu_button= Menubutton ( tool_bar_container, text="File", relief=RAISED )
         file_menu_button.menu = Menu (file_menu_button, tearoff = 0)
@@ -94,19 +96,19 @@ class TextEditApp:
         quit_button.grid(column=1, row=0, padx=4, pady=4)
 
     def setup_panned_window(self):
-        pw = ttk.PanedWindow(orient=HORIZONTAL)
+        pw = ttk.PanedWindow(orient=HORIZONTAL, width=1900)
 
         # Left 
-        pw.add(self.treeview_section())
+        pw.add(self.directory_treeview_section())
 
         # Right 
         pw.add(self.text_section())
 
-        pw.grid(column=1, row=1, sticky=NSEW)
+        pw.grid(column=0, row=1, sticky=NSEW)
         
         
     def text_section(self):
-        self.text_area_container = Frame(self.root, bg="grey")
+        self.text_area_container = Frame(self.root)
         self.text_area_container.grid(column=0, row=0, sticky=NSEW, padx=10, pady=10)
         
         # Configure column and row weights for the text area container
@@ -114,7 +116,7 @@ class TextEditApp:
         self.text_area_container.rowconfigure(0, weight=1)
         
         self.text = Text(self.text_area_container, font="Helvetica 12", border=2)
-        self.text.grid(sticky=NSEW)
+        self.text.grid(sticky=NSEW, rowspan=4)
         
         # Detect changes in text
         self.text.bind("<Key>", self.detect_changes)
@@ -123,16 +125,18 @@ class TextEditApp:
         
         return self.text_area_container
         
+    def directory_treeview_section(self):
+        self.tree_container = Frame(self.root)
+        self.tree_container.grid(column=1, row=1)
         
-    def treeview_section(self):
-        self.tree_container = Frame(self.root, bg="red")
-        self.tree_container.grid(column=1, row=1, sticky=NW)
+        # Overwrite default ttk style for later 
+        # style = ttk.Style(self.root)
+        # style.configure("Treeview", background=("gray"))
         tree = treeview.DirectoryTreeView(self.tree_container)
-        tree.grid(pady=10)
+        tree.pack(fill="both", expand=True)
         
         return self.tree_container
 
-        
         
     def setup_file_info(self):
         file_info_container = Frame(self.text_area_container)
