@@ -164,14 +164,17 @@ class TextEditApp:
         current_item = self.tree.item(tree_content)
         absolute_path = self.find_file_path(current_item["text"])
         # TODO: Check if the current item is a dir, if so ignore.
-        with open(absolute_path, "r") as file:
-            file_content = file.read()
-            self.text.delete(index1=1.0, index2=END)
-            self.text.insert(chars = file_content, index=END)
-            self.current_file_content = file_content
-            self.file_name_StrVar.set(current_item["text"])
-            self.file_path_to_save = absolute_path
-        file.close()
+        if absolute_path == None:
+            return
+        elif not os.path.isdir(absolute_path):
+            with open(absolute_path, "r") as file:
+                file_content = file.read()
+                self.text.delete(index1=1.0, index2=END)
+                self.text.insert(chars = file_content, index=END)
+                self.current_file_content = file_content
+                self.file_name_StrVar.set(current_item["text"])
+                self.file_path_to_save = absolute_path
+            file.close()
         
 
 if __name__ == "__main__":
