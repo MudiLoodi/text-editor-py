@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter.scrolledtext as scrolledtext
 from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter import messagebox 
@@ -118,7 +119,7 @@ class TextEditApp:
         self.text_area_container.columnconfigure(0, weight=1)
         self.text_area_container.rowconfigure(0, weight=1)
         
-        self.text = Text(self.text_area_container, font="Helvetica 12", border=2)
+        self.text = scrolledtext.ScrolledText(self.text_area_container, font="Helvetica 12", border=2)
         self.text.grid(sticky=NSEW, rowspan=4)
         
         # Detect changes in text
