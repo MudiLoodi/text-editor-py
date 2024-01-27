@@ -5,10 +5,16 @@ import os
 class DirectoryTreeView(ttk.Treeview):
     def __init__(self, root):
         super().__init__(root)
-        current_folder = os.path.basename(os.getcwd())
-        self.heading('#0', text=f"{current_folder}", anchor=tk.W)
+        # current_folder = os.path.basename(os.getcwd())
 
-        self.populate_tree(os.getcwd())
+        # self.populate_tree(os.getcwd())
+        
+    def update_dir(self, dir):
+        # Delete the current tree
+        self.delete(*self.get_children())
+        # Update the heading
+        self.heading('#0', text=f"{dir}", anchor=tk.W)
+        self.populate_tree(dir)
 
     def populate_tree(self, path, parent=''):
         for item in os.listdir(path):

@@ -37,12 +37,12 @@ class TextEditApp:
             match event.keysym:
                 case "s":
                     self.save_file(None)
-                case "r":
-                    #TODO: Add Redo 
-                    print("pressed r")
-                case "u":
-                    #TODO: Undo 
-                    print("pressed u")
+                # case "r":
+                #     #TODO: Add Redo 
+                #     print("pressed r")
+                # case "u":
+                #     #TODO: Undo 
+                #     print("pressed u")
     
     def ask_for_unsaved_changes(self):
         current_content_in_editor = self.text.get(1.0, "end-1c")
@@ -53,6 +53,14 @@ class TextEditApp:
         # No unsaved changes. Return True by default
         return True
         
+    def open_folder(self):
+        #TODO: askdirectory does not display files within the folders. Try to find an alternative way to do this.
+        new_dir = fd.askdirectory()
+        new_dir_cleaned = new_dir.replace("/", "\\") # Replace / with \ so the pathname is accepted by os.chdir 
+        os.chdir(new_dir_cleaned)
+        self.tree.update_dir(os.getcwd())
+
+
     def open_file(self):
         if self.ask_for_unsaved_changes():
             filetypes = (('text files', '*.txt'), ('All files', '*.*'))
@@ -90,7 +98,8 @@ class TextEditApp:
         file_menu_button["menu"] = file_menu_button.menu
         file_menu_button.grid(column=0, row=0)
         
-        file_menu_button.menu.add_command (label="Open", command=self.open_file)
+        file_menu_button.menu.add_command (label="Open Folder...", command=self.open_folder)
+        file_menu_button.menu.add_command (label="Open File...", command=self.open_file)
         file_menu_button.menu.add_command (label="Save", command=lambda: self.save_file("save"))
         file_menu_button.menu.add_command (label="Save As", command=lambda: self.save_file("saveAS"))
         
