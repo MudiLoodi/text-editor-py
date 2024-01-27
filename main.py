@@ -24,7 +24,7 @@ class TextEditApp:
         self.setup_file_info()
         self.setup_panned_window()
         
-    # TODO: Warn about unsaved changes.    
+    #TODO: Warn about unsaved changes.    
     def quit_app(self):
         self.root.destroy()
         
@@ -38,10 +38,10 @@ class TextEditApp:
                 case "s":
                     self.save_file(None)
                 case "r":
-                    # TODO: Redo
+                    #TODO: Add Redo 
                     print("pressed r")
                 case "u":
-                    # TODO: Undo
+                    #TODO: Undo 
                     print("pressed u")
     
     def ask_for_unsaved_changes(self):
@@ -119,7 +119,7 @@ class TextEditApp:
         self.text_area_container.columnconfigure(0, weight=1)
         self.text_area_container.rowconfigure(0, weight=1)
         
-        self.text = scrolledtext.ScrolledText(self.text_area_container, font="Helvetica 12", border=2)
+        self.text = scrolledtext.ScrolledText(self.text_area_container, font="Helvetica 12", border=2, undo = True)
         self.text.grid(sticky=NSEW, rowspan=4)
         
         # Detect changes in text
